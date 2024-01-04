@@ -1,0 +1,4 @@
+vue js
+
+npm install bootstrap
+npm i axios
