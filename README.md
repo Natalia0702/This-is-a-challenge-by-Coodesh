@@ -3,10 +3,10 @@
 <p align="center">Desenvolvimento de uma tela de gestão de despesas (CRUD), com login via autenticação de usuários e restrições de acesso.<p>
 
 <p align="center">Tecnologias Utilizadas<p>
-  Laravel X10
-  VueJs 3
-  Flatpickr
-  MySQL
+  Laravel X10 </br>
+  VueJs 3 </br>
+  Flatpickr </br>
+  MySQL </br>
   
 <h1>Instruções</h1>
   Via terminal acessar a pasta frontend e rodar os seguintes comandos
