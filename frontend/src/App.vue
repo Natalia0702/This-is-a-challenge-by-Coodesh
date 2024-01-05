@@ -1,10 +1,28 @@
 <template>
-  <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/login">login</router-link> |
-      <router-link to="/expenses">Expenses</router-link>
+    <header data-bs-theme="dark">
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Carousel</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0">
+          <li class="nav-item">
+            <router-link to="/" class="nav-link active">Home</router-link>
+          </li>
+          <router-link to="/expenses" class="nav-link active">Expenses</router-link>
+        </ul>
+        <div class="d-flex">
+            <router-link to="/login" class="btn btn-sm btn-outline-info">Login</router-link>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+  <div class="container-box pt-5 mt-5 px-3">
+    <router-view />
   </div>
-  <router-view />
 </template>
 
 

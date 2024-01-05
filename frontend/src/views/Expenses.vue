@@ -6,6 +6,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { toast } from '@/helpers/toast'
 import { randomNumber, range } from '@/helpers/fake'
 import Modal from '@/components/BS5/Modal.vue'
+import { getUrl } from '@/services/api'
 
 const API_URL = 'http://localhost:8000/api/expenses';
 const token = localStorage.getItem('token');
@@ -45,6 +46,41 @@ const formatDate = (date, preset = 'pt-BR') => {
 
 let expenseToShow = ref();
 let expenseToEdit = ref();
+let expenseToDelete = ref();
+
+const deleteExpense = () => {
+    let expense = expenseToDelete.value;
+    if (!expense || !expense.id) {
+        console.log('expense', expense);
+        return;
+    }
+
+    let token = localStorage.getItem('token');
+    fetch(getUrl(`expenses/${expense.id}`), {
+        method: 'DELETE',
+        headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        response.ok
+            ? toast.success('Deleted successfuly!')
+            : toast.error('Fail on delete record!');
+
+        if (response.ok) {
+            expenses.value = expenses.value?.filter(item => item?.id != expense.id);
+        }
+
+        response.json();
+    })
+    .then(data => console.log(data))
+    .catch(error => {
+        toast.error('Error on delete record');
+      });
+
+    expenseToDelete.value = null
+}
 
 </script>
 
@@ -86,6 +122,7 @@ let expenseToEdit = ref();
                             <button
                                 type="button"
                                 class="btn btn-sm btn-outline-danger"
+                                @click="expenseToDelete = expense"
                             >Excluir</button>
 
                             <button
@@ -104,6 +141,7 @@ let expenseToEdit = ref();
                 </tr>
         </tbody>
     </table>
+
     <Modal
         v-if="expenseToShow && expenseToShow.id"
         open="1"
@@ -246,6 +284,37 @@ let expenseToEdit = ref();
                 class="btn btn-outline-success"
             >
                 Save
+            </button>
+        </template>
+    </Modal>
+
+    <Modal
+        v-if="expenseToDelete && expenseToDelete.id"
+        open="1"
+    >
+    <template #heading>
+        <span class="text-danger">Expense delete</span>
+    </template>
+        <p>Tem certeza que deseja excluir o item <strong>#{{ expenseToDelete.id }}</strong>?</p>
+        <p>Essa ação não poderá ser desfeita.</p>
+
+        <template #modal_footer>
+            <button
+                type="button"
+                class="btn btn-outline-secondary"
+                data-bs-dismiss="modal"
+                @click="expenseToDelete = null"
+            >
+                Cancelar
+            </button>
+
+
+            <button
+                type="button"
+                class="btn btn-danger"
+                @click="deleteExpense"
+            >
+                Sim! Quero deletar
             </button>
         </template>
     </Modal>
