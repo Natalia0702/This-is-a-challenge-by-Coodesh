@@ -16,11 +16,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->foreignId('expense_id')->constrained();
-            $table->unsignedTinyInteger('access_level')->nullable(); 
+            $table->enum('access_level', [1, 2])->nullable();
             $table->timestamps();
         });
-
-        DB::statement("ALTER TABLE access_level ADD CONSTRAINT check_access_level CHECK (access_level IN (1, 2))");
     }
 
     /**
