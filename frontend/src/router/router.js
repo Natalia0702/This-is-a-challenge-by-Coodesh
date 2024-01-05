@@ -17,6 +17,7 @@ const router = createRouter({
             path: '/expenses',
             name: 'expenses',
             component: Expenses,
+            props: route => ({ query: route.query.page })
         },
         {
             path: '/login',

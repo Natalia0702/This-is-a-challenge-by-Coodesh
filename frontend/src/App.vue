@@ -5,10 +5,25 @@
         <router-link to="/" class="navbar-brand active">
             My Expenses
         </router-link>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <button
+        class="navbar-toggler"
+        type="button"
+        data-bs-toggle="collapse"
+        data-bs-target="#navbarCollapse"
+        aria-controls="navbarCollapse"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+        @click="toggleExpandNavbar"
+    >
         <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
+    </button>
+      <div
+            class="collapse navbar-collapse"
+            id="navbarCollapse"
+            :class="{
+                show: expandNavbar,
+            }"
+        >
         <ul class="navbar-nav me-auto mb-2 mb-md-0">
           <li class="nav-item">
             <router-link to="/" class="nav-link active">Home</router-link>
@@ -16,7 +31,10 @@
           <router-link to="/expenses" class="nav-link active">Expenses</router-link>
         </ul>
         <div class="d-flex">
-            <router-link to="/login" class="btn btn-sm btn-outline-info">Login</router-link>
+            <router-link
+                v-if="token ? 1 : 0"
+                to="/login" class="btn btn-sm btn-outline-info"
+            >Login</router-link>
         </div>
       </div>
     </div>
@@ -39,9 +57,16 @@ export default {
       email: "",
       password: "",
       post: {},
+      expandNavbar: false,
     };
   },
   methods: {
+    toggleExpandNavbar() {
+        this.expandNavbar = !this.expandNavbar;
+    },
+    get token() {
+        return localStorage.getItem('token');
+    },
     getToken() {
       const data = {
         email: this.email,

@@ -10,7 +10,11 @@ import { getUrl } from '@/services/api'
 
 const API_URL = 'http://localhost:8000/api/expenses';
 const token = localStorage.getItem('token');
-const router = useRouter()
+const router = useRouter();
+const route = useRoute();
+let pageNumber = ref(
+    (new URL(window.location)).searchParams.get('page')
+)
 
 if (!token) {
     toast.error('Área restrita!\n Por favor, identifique-se!');
@@ -18,8 +22,21 @@ if (!token) {
 }
 
 let expenses = ref([])
+let pagination = ref({
+    links: null,
+    from: null,
+    from: null,
+    first_page_url: null,
+    last_page_url: null,
+    next_page_url: null,
+    prev_page_url:null,
+    per_page: null,
+    to:null,
+    total:null,
+})
 
-onMounted(() => {
+const updateExpenseList = (page = null) => {
+    page = page && page >= 1 ? page : pageNumber.value;
     const config = {
       headers: {
         Accept: 'application/json',
@@ -28,15 +45,34 @@ onMounted(() => {
       },
     };
 
-    fetch(API_URL, config)
+    fetch(
+        API_URL + `?page=${page}`,
+        config
+    )
       .then(response => response.json())
       .then(responseData => {
             // console.log('responseData:', responseData.data);
             expenses.value = responseData.data;
+            pagination.value = {
+                links: responseData.links || null,
+                from: responseData.from || null,
+                from: responseData.from || null,
+                first_page_url: responseData.first_page_url || null,
+                last_page_url: responseData.last_page_url || null,
+                next_page_url: responseData.next_page_url || null,
+                prev_page_url: responseData.prev_page_url || null,
+                per_page: responseData.per_page || null,
+                to: responseData.to || null,
+                total: responseData.total || null,
+            };
       })
       .catch(error => {
           console.error('Erro ao buscar despesas:', error);
       });
+}
+
+onMounted(() => {
+    updateExpenseList();
 });
 
 const formatDate = (date, preset = 'pt-BR') => {
@@ -115,6 +151,23 @@ const updateExpense = () => {
       expenseToEdit.value = null
 }
 
+const navigateToPage = (link) => {
+    if (!link || !link?.url) {
+        return;
+    }
+
+    let url = link?.url;
+
+    let page = (new URL(url)).searchParams.get('page');
+
+    if (!page) {
+        console.log('3');
+        return;
+    }
+
+    router.push({ path: 'expenses', query: { page: page } });
+    updateExpenseList(page);
+}
 </script>
 
 <style></style>
@@ -173,6 +226,46 @@ const updateExpense = () => {
                     </td>
                 </tr>
         </tbody>
+        <tfoot>
+            <tr>
+                <td
+                    colspan="100%"
+                    v-if="pagination?.links ? 1 : 0"
+                >
+                    <nav
+                        aria-label="custom-pag-footer-nav"
+                    >
+                        <ul class="pagination">
+                            <template
+                                v-for="(link, linkIndex) in pagination.links"
+                                    :key="linkIndex"
+                            >
+                                <li
+                                    class="page-item"
+                                    :class="{
+                                        active: link?.active,
+                                    }"
+                                >
+                                    <button
+                                        type="button"
+                                        class="page-link"
+                                        v-if="link?.url"
+                                        @click="navigateToPage(link)"
+                                        v-html="link?.label"
+                                    ></button>
+
+                                    <span
+                                        class="page-link disabled"
+                                        v-else
+                                        v-html="link?.label"
+                                    ></span>
+                                </li>
+                            </template>
+                        </ul>
+                    </nav>
+                </td>
+            </tr>
+        </tfoot>
     </table>
 
     <Modal
