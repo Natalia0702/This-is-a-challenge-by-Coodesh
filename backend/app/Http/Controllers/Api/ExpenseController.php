@@ -10,7 +10,7 @@ class ExpenseController extends Controller
 {
     public function __construct()
     {
-        // $this->middleware('auth:sanctum'); //NOCOMMIT
+        $this->middleware('auth:sanctum');
     }
 
     /**
@@ -45,9 +45,11 @@ class ExpenseController extends Controller
      */
     public function show(string $id)
     {
-        $idInt = intval($id);
+        $expense = Expense::findOrFail(intval($id));
 
-        return Expense::find($idInt);
+        $this->authorize('view', $expense);
+
+        return $expense;
     }
 
     /**
@@ -56,19 +58,23 @@ class ExpenseController extends Controller
     public function update(Request $request, string $id)
     {
         $expense = Expense::findOrFail($id);
-
         $this->authorize('update', $expense);
 
         $validatedData = $request->validate([
-            'description' => 'required|string|max:255',
-            'date' => 'required|date',
-            'user_id' => 'required|exists:users,id',
-            'value' => 'required|numeric|min:0.01',
+            'description' => 'string|max:255',
+            'date' => 'date',
+            'user_id' => 'exists:users,id',
+            'value' => 'numeric|min:0.01',
         ]);
 
-        $expense->update($validatedData);
+        $updated = $expense->update($validatedData);
 
-        return response()->json(['message' => 'Expense updated successfully'], 200);
+        return response()->json(
+            [
+                'message' => $updated ? 'Expense updated successfully' : 'Fail on update expense',
+            ],
+            $updated ? 200 : 422
+        );
     }
 
     /**
@@ -76,10 +82,17 @@ class ExpenseController extends Controller
      */
     public function destroy(string $id)
     {
-        $idInt = intval($id);
+        $expense = Expense::findOrFail(intval($id));
 
-        Expense::destroy($idInt);
+        $this->authorize('update', $expense);
 
-        return response()->json(['message' => 'Expense deleted successfully'], 204);
+        $deleted = $expense->delete();
+
+        return response()->json(
+            [
+                'message' => $deleted ? 'Expense deleted successfully' : 'Fail on delete expense',
+            ],
+            $deleted ? 200 : 422
+        );
     }
 }

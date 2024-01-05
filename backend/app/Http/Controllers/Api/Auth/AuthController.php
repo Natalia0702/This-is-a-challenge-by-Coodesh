@@ -12,17 +12,21 @@ class AuthController extends Controller
 {
     public function auth(Request $request)
     {
+        /**
+         * @var User $user
+         */
         $user = User::where('email', $request->email)->first();
-        
+
         if (!$user || ! Hash::check($request->password, $user->password)) {
             throw ValidationException::withMessages([
-                'email' => ['email ou senha invalidas']
+                'email' => ['E-mail ou senha invalidos']
             ]);
         }
 
         $user->tokens()->delete();
+        $abilities = $request->input('abilities') ?: ['*'];
 
-        $token = $user->createToken('login')->plainTextToken;
+        $token = $user->createToken('login', \Arr::wrap($abilities))->plainTextToken;
 
         return response()->json([
             'token' => $token,
