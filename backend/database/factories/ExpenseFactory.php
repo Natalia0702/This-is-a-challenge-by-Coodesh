@@ -15,7 +15,7 @@ class ExpenseFactory extends Factory
     {
         return [
             'description' => fake()->sentence,
-            'date' => fake()->date,
+            'date' => now()->subDays(rand(1, 20)),
             'user_id' => User::inRandomOrder()->first()->id,
             'value' => fake()->randomFloat(2, 1, 1000),
             'created_at' => now(),
