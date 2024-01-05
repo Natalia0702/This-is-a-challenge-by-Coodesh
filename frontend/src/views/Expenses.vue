@@ -82,6 +82,39 @@ const deleteExpense = () => {
     expenseToDelete.value = null
 }
 
+const updateExpense = () => {
+    let expense = expenseToEdit.value;
+    if (!expense || !expense.id) {
+        console.log('expense', expense);
+        return;
+    }
+
+    let token = localStorage.getItem('token');
+
+    fetch(getUrl(`expenses/${expense.id}`), {
+        method: 'PUT',
+        body: JSON.stringify(expense),
+        headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        }
+    })
+    .then(response => {
+        response.ok
+            ? toast.success('Updated successfuly!')
+            : toast.error('Fail on update record!');
+
+        response.json();
+    })
+    .then(data => console.log(data))
+    .catch(error => {
+        toast.error('Error on delete record');
+      });
+
+      expenseToEdit.value = null
+}
+
 </script>
 
 <style></style>
@@ -184,8 +217,9 @@ const deleteExpense = () => {
             <button
                 type="button"
                 class="btn btn-outline-primary"
+                @click="expenseToEdit = expenseToShow"
             >
-                Editar
+                Edit
             </button>
 
             <button
@@ -194,7 +228,7 @@ const deleteExpense = () => {
                 data-bs-dismiss="modal"
                 @click="expenseToShow = null"
             >
-                Fechar
+                Close
             </button>
         </template>
     </Modal>
@@ -282,6 +316,7 @@ const deleteExpense = () => {
             <button
                 type="button"
                 class="btn btn-outline-success"
+                @click="updateExpense"
             >
                 Save
             </button>
