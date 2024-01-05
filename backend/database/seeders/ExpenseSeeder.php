@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Expense;
 
-class DatabaseSeeder extends Seeder
+class ExpenseSeeder extends Seeder
 {
     public function run()
     {

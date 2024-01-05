@@ -14,13 +14,12 @@ class ExpenseFactory extends Factory
     public function definition()
     {
         return [
-            'description' => $this->faker->sentence,
-            'date' => $this->faker->date,
-            'user_id' => User::inRandomOrder()->first()->id, 
-            'value' => $this->faker->randomFloat(2, 1, 1000),
+            'description' => fake()->sentence,
+            'date' => fake()->date,
+            'user_id' => User::inRandomOrder()->first()->id,
+            'value' => fake()->randomFloat(2, 1, 1000),
             'created_at' => now(),
             'updated_at' => now(),
         ];
     }
 }
-

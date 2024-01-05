@@ -1,25 +1,31 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Models\Expense;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
+use App\Models\Expense;
 
 class ExpenseController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth:sanctum');
+        // $this->middleware('auth:sanctum'); //NOCOMMIT
     }
-    
-    public function getAll()
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
     {
-        $expense = Expense::all();
+        $expense = Expense::paginate(20);
 
         return $expense;
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -34,24 +40,21 @@ class ExpenseController extends Controller
         return response()->json(['message' => 'Expense created successfully'], 201);
     }
 
-    public function getById(string $id)
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
     {
         $idInt = intval($id);
-        
+
         return Expense::find($idInt);
     }
 
-    public function destroy(string $id)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
     {
-        $idInt = intval($id);
-
-        Expense::destroy($idInt);
-        
-        return response()->json(['message' => 'Expense deleted successfully'], 204);
-    }
-    
-    public function put(Request $request, $id)
-    {   
         $expense = Expense::findOrFail($id);
 
         $this->authorize('update', $expense);
@@ -66,5 +69,17 @@ class ExpenseController extends Controller
         $expense->update($validatedData);
 
         return response()->json(['message' => 'Expense updated successfully'], 200);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        $idInt = intval($id);
+
+        Expense::destroy($idInt);
+
+        return response()->json(['message' => 'Expense deleted successfully'], 204);
     }
 }

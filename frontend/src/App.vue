@@ -6,7 +6,7 @@
   </div>
   <router-view />
 </template>
-  
+
 
 
 <script>
@@ -27,7 +27,7 @@ export default {
         email: this.email,
         password: this.password,
       };
-      fetch("http://localhost:8000/api/login", {
+      fetch("http://localhost:8000/api/auth/login", {
         method: "POST",
         body: JSON.stringify(data),
         headers: {
@@ -40,14 +40,14 @@ export default {
           if (!data || !data?.token) {
             return
           }
-          
-          
+
+
           localStorage.setItem('token', JSON.stringify(data.token));
           console.log(data);
         });
       },
   },
-        
-  
+
+
 };
 </script>

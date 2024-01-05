@@ -30,7 +30,7 @@ onBeforeMount(() => {
 //se o token for valido redireciono
 
 /*
-códigos úteis 
+códigos úteis
 localStorage.setItem('token', 'fadtyhafsthydf')
 localStorage.getItem('token')
 localStorage.removeItem('token')
@@ -44,7 +44,7 @@ const user = {
 }
 
 const login = () => {
-    fetch("http://localhost:8000/api/login", {
+    fetch("http://localhost:8000/api/auth/login", {
         method: "POST",
         body: JSON.stringify(user),
         headers: {
@@ -57,8 +57,8 @@ const login = () => {
           if (!data || !data?.token) {
             return
           }
-          
-          localStorage.setItem('token', JSON.stringify(data.token));
+
+          localStorage.setItem('token', data.token);
           console.log(data);
           router.push('/expenses');
         })
@@ -66,7 +66,7 @@ const login = () => {
 /*
 const verificarToken = async (token) => {
   try {
-    const response = await axios.get('http://localhost:8000/api/login', {
+    const response = await axios.get('http://localhost:8000/api/auth/login', {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -77,15 +77,15 @@ const verificarToken = async (token) => {
   } catch (error) {
     console.log(response+ '  sadad');
     return false;
-  
+
   }
 };
 
 verificarToken(token)
     .then((tokenValido) => {
         if (tokenValido) {
-            
-            console.log('O token é válido.');   
+
+            console.log('O token é válido.');
 
             router.push('/expenses');
         } else {
