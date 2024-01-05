@@ -26,7 +26,7 @@ Via terminal acessar a pasta backend e rodar os seguintes comandos
   <li>adicionar o nome do banco (DB_DATABASE) no arquivo .env</li>
   <li>adicionar o usuario do banco (DB_USERNAME) no arquivo .env</li>
   <li>adicionar a senha (DB_PASSWORD) do banco no arquivo .env</li>
-  <li>Para criar as tabelas: php artisan migrate<li>
-  <li>Para popular a base com dados fakes, rodar o comando: php artisan db:seed <li>
+  <li>Para criar as tabelas: php artisan migrate</li>
+  <li>Para popular a base com dados fakes, rodar o comando: php artisan db:seed </li>
 </ul>
 
